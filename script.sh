@@ -1,22 +1,24 @@
 #!/bin/bash
 
-DISCORD_WEBHOOK_URL="YOUR_DISCORD_WEBHOOK_URL"
-CONTAINER_A="your_specific_container_name_1"
-CONTAINER_B="your_specific_container_name_2"
+DISCORD_WEBHOOK_URL="your_url"
+SPECIFIC_CONTAINER_NAMES=("name_container" "name_container")
 
+# Monitor Docker events
 docker events --format '{{json .}}' | while read -r event; do
   container_name=$(echo "$event" | jq -r .Actor.Attributes.name)
+  status=$(echo "$event" | jq -r .status)
 
-  if [ "$container_name" == "$SPECIFIC_CONTAINER_NAME_1" ] || [ "$container_name" == "$SPECIFIC_CONTAINER_NAME_2" ]; then
-    status=$(echo "$event" | jq -r .status)
+  if [ "$container_name" ]; then
+    echo "Container Name: $container_name, Status: $status"
 
-    if [ "$status" == "start" ]; then
-      # Trigger webhook for container start
-      curl -X POST -H "Content-Type: application/json" -d '{"content": "Container '"$container_name"' started!"}' "$DISCORD_WEBHOOK_URL"
-    elif [ "$status" == "die" ]; then
-      # Trigger webhook for container stop
-      curl -X POST -H "Content-Type: application/json" -d '{"content": "Container '"$container_name"' stopped."}' "$DISCORD_WEBHOOK_URL"
+    if [[ "${SPECIFIC_CONTAINER_NAMES[@]}" =~ "$container_name" ]]; then
+      if [ "$status" == "start" ]; then
+        # Trigger webhook for container start
+        curl -X POST -H "Content-Type: application/json" -d '{"content": "Container '"**$container_name**"' started! **[ON]**"}' "$DISCORD_WEBHOOK_URL"
+      elif [ "$status" == "die" ] || [ "$status" == "kill" ]; then
+        # Trigger webhook for container stop
+        curl -X POST -H "Content-Type: application/json" -d '{"content": "Container '"**$container_name**"' stopped **[OFF]**"}' "$DISCORD_WEBHOOK_URL"
+      fi
     fi
   fi
 done
-
