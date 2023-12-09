@@ -4,6 +4,10 @@ Script in bash, to track event on your container and send the event in your disc
 ![2023-12-09_14h18_17](https://github.com/StopThatTalace/docker-spy/assets/117742366/b4a90d2a-5599-4d71-bfee-d4643151d3d7)
 
 ## Installing 😼
+### 0. git clone the project!
+```
+git clone https://github.com/StopThatTalace/docker-spy.git
+```
 ### 1. Install jq tool
 ```
 sudo apt-get install jq
