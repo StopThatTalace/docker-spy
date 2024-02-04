@@ -15,7 +15,7 @@ docker events --format '{{json .}}' | while read -r event; do
       if [ "$status" == "start" ]; then
         # Trigger webhook for container start
         curl -X POST -H "Content-Type: application/json" -d '{"content": "Container '"**$container_name**"' started! **[ON]**"}' "$DISCORD_WEBHOOK_URL"
-      elif [ "$status" == "die" ] || [ "$status" == "kill" ]; then
+      elif [ "$status" == "die" ]; then
         # Trigger webhook for container stop
         curl -X POST -H "Content-Type: application/json" -d '{"content": "Container '"**$container_name**"' stopped **[OFF]**"}' "$DISCORD_WEBHOOK_URL"
       fi
